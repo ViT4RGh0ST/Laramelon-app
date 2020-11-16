@@ -2,7 +2,7 @@ import React from 'react';
 import { useDatabase } from '@nozbe/watermelondb/hooks'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
 
-export default ({product, setProductToEdit, open, setOpen}) => {
+const ProductDialog = ({product, setProductToEdit, open, setOpen, handleSync}) => {
   const database = useDatabase()
 
   const [form, setForm] = React.useState({name: product.name, price: product.price})
@@ -16,6 +16,7 @@ export default ({product, setProductToEdit, open, setOpen}) => {
     })
 
     handleClose()
+    handleSync()
   }
 
   const handleSave = async () => {
@@ -27,6 +28,7 @@ export default ({product, setProductToEdit, open, setOpen}) => {
       })
     })
     handleClose()
+    handleSync()
   }
 
   const handleClose = async () => {
@@ -79,3 +81,5 @@ export default ({product, setProductToEdit, open, setOpen}) => {
     </div>
   )
 }
+
+export default ProductDialog;

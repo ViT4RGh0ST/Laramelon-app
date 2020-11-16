@@ -8,6 +8,13 @@ import sync from '../../database/sync';
 import ProductDialog from '../dialogs/ProductDialog';
 
 function ProductList({products, database}) {
+
+  const [productsSynced, setProducts] = React.useState(products);
+
+  // React.useEffect(() => {
+  //   setProducts(products)
+  // }, [productsT])
+
   const productEmpty = {
     name: '',
     price: ''
@@ -20,10 +27,12 @@ function ProductList({products, database}) {
       await product.markAsDeleted() // syncable
       // await product.destroyPermanently()
     })
+    handleSync()
   }
 
   const handleSync = async () => {
-    await sync()
+    const syncs = await sync();
+    setProducts(syncs.productsS)
   }
 
   const columns = [
@@ -48,7 +57,6 @@ function ProductList({products, database}) {
             size="small"
             style={{ marginLeft: 16 }}
             onClick={() => {
-              console.log(params.data._raw.deleted_at !== 0)
               setProductToEdit(params.data)
               setOpen(true)
             }}
@@ -88,12 +96,12 @@ function ProductList({products, database}) {
           Add New Product
         </Button>
       </div>
-      {productToEdit ? <ProductDialog open={open} setOpen={setOpen} product={productToEdit} setProductToEdit={setProductToEdit}/> : null}
-      <DataGrid rows={products} columns={columns} pageSize={5} autoHeight={true} disableSelectionOnClick={true}/>
+      {productToEdit ? <ProductDialog open={open} setOpen={setOpen} product={productToEdit} setProductToEdit={setProductToEdit} handleSync={handleSync}/> : null}
+      <DataGrid rows={productsSynced} columns={columns} pageSize={5} autoHeight={true} disableSelectionOnClick={true}/>
     </div>
   )
 }
 
 export default withDatabase(withObservables([], ({ database }) => ({
-  products: database.collections.get('products').query().observe(),
+  products: database.get('products').query().observe(),
 }))(ProductList))
