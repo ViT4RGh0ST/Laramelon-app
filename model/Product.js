@@ -9,4 +9,5 @@ export default class Product extends Model {
   @field('price') price
   @readonly @date('created_at') createdAt
   @readonly @date('updated_at') updatedAt
+  @readonly @date('deleted_at') deletedAt
 }

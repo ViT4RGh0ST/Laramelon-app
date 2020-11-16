@@ -18,6 +18,7 @@ function ProductList({products, database}) {
   const handleDelete = async (product) => {
     await database.action(async () => {
       await product.markAsDeleted() // syncable
+      // await product.destroyPermanently()
     })
   }
 
@@ -35,7 +36,9 @@ function ProductList({products, database}) {
     { field: 'updatedAt', headerName: 'Updated At', width: 230,
       renderCell: (params) => moment(params.data.updatedAt).format('YYYY-MM-DD HH:mm:ss')
     },
-    { field: 'deletedAt', headerName: 'Deleted At', width: 50 },
+    { field: 'deletedAt', headerName: 'Deleted At', width: 50,
+      renderCell: (params) => ( params.data._raw.deleted_at ? moment(params.data.deletedAt).format('YYYY-MM-DD HH:mm:ss') : '-')
+    },
     { field: 'options', headerName: 'options', width: 200,
       renderCell: (params) => (
         <div>
@@ -45,6 +48,7 @@ function ProductList({products, database}) {
             size="small"
             style={{ marginLeft: 16 }}
             onClick={() => {
+              console.log(params.data._raw.deleted_at !== 0)
               setProductToEdit(params.data)
               setOpen(true)
             }}
