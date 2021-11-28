@@ -1,6 +1,4 @@
-import { LocalGroceryStoreRounded } from '@material-ui/icons'
 import { synchronize } from '@nozbe/watermelondb/sync'
-import withObservables from '@nozbe/with-observables'
 import database from '../../database'
 
 export default async function sync() {
@@ -37,7 +35,7 @@ export default async function sync() {
 
   console.log(log)
 
-  let productsColl = database.collections.get('products')
+  const productsColl = database.collections.get('products')
   results.productsS = await productsColl.query().fetch()
   return results;
 }
